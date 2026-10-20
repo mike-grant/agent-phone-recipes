@@ -7,6 +7,9 @@ on:
 
 jobs:
   validate:
+    # agent-phone is installed from GitHub, so this needs that repo to be public.
+    # Enable with: gh variable set AGENT_PHONE_PUBLIC --body true
+    if: ${{ vars.AGENT_PHONE_PUBLIC == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
