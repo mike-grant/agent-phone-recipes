@@ -1,0 +1,323 @@
+# SAVES TO DRAFTS ONLY — NEVER PUBLISHES. `forbid` refuses taps on Post / Your Story.
+# Usage: agent-phone run tiktok/carousel-draft --param images=DIR --param caption_file=PATH
+#   or:  agent-phone tiktok-draft DIR [--caption TEXT | --caption-file PATH]
+name: tiktok/carousel-draft
+version: 2
+app: com.zhiliaoapp.musically
+description: Post a photo carousel from a folder of images to TikTok DRAFTS. Saves
+  to Drafts only — never publishes.
+tested:
+  date: '2026-10-01'
+  app_version: ''
+min_engine: 0.3.0
+params:
+  images:
+    type: dir
+    required: true
+    description: Local folder of slide images
+  caption:
+    required: true
+    description: 'Caption text (CLI: pass caption_file=PATH instead)'
+  caption_file:
+    type: file
+    default: ''
+    description: 'Alternative to caption: path of a text file'
+forbid:
+- text: Post
+- resource_id_suffix: tiq
+- text: Your Story
+- resource_id_suffix: tv_quick_publish
+popups:
+- text: Don’t allow
+- text: Don't allow
+- text: Not now
+steps:
+- id: s1
+  intent: Push the slide images to the phone as one gallery album (first slide newest)
+    and count them
+  action: push_images
+  value: '{{images}}'
+  exclude:
+  - sheet.*
+  - '*contact*'
+  max: 35
+  optional: false
+  retries: 0
+- id: s2
+  intent: Force-stop and relaunch TikTok so we start from the home feed, not a leftover editor or draft
+  action: app
+  restart: true
+  target: null
+  value: com.zhiliaoapp.musically
+  expect:
+    any_of:
+    - resource_id: com.zhiliaoapp.musically:id/a3k
+    - resource_id: com.zhiliaoapp.musically:id/v4t
+    - resource_id: com.zhiliaoapp.musically:id/v4w
+    timeout: 20
+  optional: false
+  retries: 2
+- id: s3
+  intent: Dismiss any permission/contacts popup (always prefer 'Don’t allow')
+  action: dismiss_if_present
+  targets:
+  - text: Don’t allow
+  - text: Don't allow
+  - text: Not now
+  timeout: 2
+  optional: true
+  retries: 0
+- id: s4
+  intent: Tap the Create (+) button in the bottom navigation
+  action: tap
+  target:
+    resource_id: com.zhiliaoapp.musically:id/omm
+    text: ''
+    content_desc: Create
+    class: android.widget.Button
+    path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/FrameLayout[0]/05nV[0]/TabHost[0]/FrameLayout[1]/LinearLayout[3]/Button[2]
+    rel_pos:
+    - 0.5
+    - 0.9142
+    context:
+      ancestor_text: ''
+      sibling_texts:
+      - Home
+      - Shop
+      - Inbox
+      - Profile
+      parent_path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/FrameLayout[0]/05nV[0]/TabHost[0]/FrameLayout[1]/LinearLayout[3]
+      orientation: portrait
+    bounds:
+    - 576
+    - 2620
+    - 864
+    - 2792
+    center:
+    - 720
+    - 2706
+  value: null
+  expect:
+    any_of:
+    - resource_id: com.zhiliaoapp.musically:id/puj
+    - resource_id: com.zhiliaoapp.musically:id/video_record_new_scene_root
+    - resource_id: com.zhiliaoapp.musically:id/n5g
+    timeout: 10
+  optional: false
+  retries: 2
+- id: s5
+  intent: Open the gallery picker via the upload thumbnail (bottom left)
+  action: tap
+  target:
+    resource_id: com.zhiliaoapp.musically:id/upload_hot_area
+    text: ''
+    content_desc: ''
+    class: android.widget.FrameLayout
+    path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[1]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/FrameLayout[4]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/FrameLayout[0]/FrameLayout[3]/FrameLayout[6]/FrameLayout[2]/RelativeLayout[0]/FrameLayout[0]
+    rel_pos:
+    - 0.0972
+    - 0.8986
+    context:
+      ancestor_text: ''
+      sibling_texts: []
+      parent_path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[1]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/FrameLayout[4]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/FrameLayout[0]/FrameLayout[3]/FrameLayout[6]/FrameLayout[2]/RelativeLayout[0]
+      orientation: portrait
+    bounds:
+    - 0
+    - 2560
+    - 280
+    - 2760
+    center:
+    - 140
+    - 2660
+  value: null
+  expect:
+    any_of:
+    - resource_id: com.zhiliaoapp.musically:id/e0b
+    - resource_id: com.zhiliaoapp.musically:id/g1z
+    - resource_id: com.zhiliaoapp.musically:id/ayq
+    timeout: 10
+  optional: false
+  retries: 2
+- id: s6
+  intent: Select the first {{image_count}} grid items (slides 1..N, in order) via
+    their selection circles
+  action: select_grid
+  target:
+    resource_id: com.zhiliaoapp.musically:id/l34
+    text: ''
+    content_desc: ''
+    class: android.widget.Button
+    path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[1]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/FrameLayout[5]/FrameLayout[0]/FrameLayout[1]/ViewGroup[0]/LinearLayout[1]/RelativeLayout[1]/FrameLayout[0]/LinearLayout[0]/FrameLayout[1]/ViewPager[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[0]/GridView[0]/FrameLayout[0]/FrameLayout[1]/Button[0]
+    rel_pos:
+    - 0.2882
+    - 0.1622
+    context:
+      ancestor_text: ''
+      sibling_texts: []
+      parent_path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[1]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/FrameLayout[5]/FrameLayout[0]/FrameLayout[1]/ViewGroup[0]/LinearLayout[1]/RelativeLayout[1]/FrameLayout[0]/LinearLayout[0]/FrameLayout[1]/ViewPager[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[0]/GridView[0]/FrameLayout[0]/FrameLayout[1]
+      orientation: portrait
+    bounds:
+    - 373
+    - 438
+    - 457
+    - 522
+    center:
+    - 415
+    - 480
+  count: '{{image_count}}'
+  expect:
+    any_of:
+    - text: Next ({{image_count}})
+    timeout: 10
+  optional: false
+  retries: 0
+- id: s7
+  intent: Tap 'Next (N)' to continue with the selected photos
+  action: tap
+  target:
+    resource_id: com.zhiliaoapp.musically:id/xyk
+    text: Next ({{image_count}})
+    content_desc: ''
+    class: android.widget.Button
+    path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[1]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/FrameLayout[5]/FrameLayout[0]/FrameLayout[1]/ViewGroup[0]/LinearLayout[1]/RelativeLayout[1]/FrameLayout[1]/FrameLayout[0]/LinearLayout[0]/LinearLayout[2]/LinearLayout[0]/Button[1]
+    rel_pos:
+    - 0.7403
+    - 0.8983
+    context:
+      ancestor_text: ''
+      sibling_texts: []
+      parent_path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[1]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/FrameLayout[5]/FrameLayout[0]/FrameLayout[1]/ViewGroup[0]/LinearLayout[1]/RelativeLayout[1]/FrameLayout[1]/FrameLayout[0]/LinearLayout[0]/LinearLayout[2]/LinearLayout[0]
+      orientation: portrait
+    bounds:
+    - 734
+    - 2582
+    - 1398
+    - 2736
+    center:
+    - 1066
+    - 2659
+  value: null
+  expect:
+    any_of:
+    - resource_id: com.zhiliaoapp.musically:id/l0u
+    - resource_id: com.zhiliaoapp.musically:id/h4g
+    - resource_id: com.zhiliaoapp.musically:id/h3v
+    timeout: 10
+  optional: false
+  retries: 2
+- id: s8
+  intent: Tap Next (bottom right) in the photo editor — NOT 'Your Story', which publishes
+    immediately
+  action: tap
+  target:
+    resource_id: com.zhiliaoapp.musically:id/q05
+    text: Next
+    content_desc: ''
+    class: android.widget.TextView
+    path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[1]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/ViewGroup[31]/FrameLayout[0]/FrameLayout[0]/LinearLayout[0]/LinearLayout[1]/TextView[0]
+    rel_pos:
+    - 0.7375
+    - 0.9064
+    context:
+      ancestor_text: ''
+      sibling_texts: []
+      parent_path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[1]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/ViewGroup[31]/FrameLayout[0]/FrameLayout[0]/LinearLayout[0]/LinearLayout[1]
+      orientation: portrait
+  value: null
+  expect:
+    any_of:
+    - resource_id: com.zhiliaoapp.musically:id/tit
+    - resource_id: com.zhiliaoapp.musically:id/e0b
+    - resource_id: com.zhiliaoapp.musically:id/v7s
+    timeout: 10
+  optional: false
+  retries: 2
+- id: s9
+  intent: Type the caption into the description field (no reliance on placeholder
+    text)
+  action: type
+  target:
+    resource_id: com.zhiliaoapp.musically:id/h8e
+    text: ''
+    content_desc: ''
+    class: android.widget.EditText
+    path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[1]/FrameLayout[0]/FrameLayout[1]/RelativeLayout[0]/ScrollView[4]/LinearLayout[0]/FrameLayout[0]/ViewGroup[0]/ScrollView[0]/LinearLayout[0]/ScrollView[1]/ViewGroup[0]/EditText[1]
+    rel_pos:
+    - 0.5
+    - 0.3598
+    context:
+      ancestor_text: ''
+      sibling_texts: []
+      parent_path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[1]/FrameLayout[0]/FrameLayout[1]/RelativeLayout[0]/ScrollView[4]/LinearLayout[0]/FrameLayout[0]/ViewGroup[0]/ScrollView[0]/LinearLayout[0]/ScrollView[1]/ViewGroup[0]
+      orientation: portrait
+    bounds:
+    - 56
+    - 817
+    - 1384
+    - 1314
+    center:
+    - 720
+    - 1065
+  value: '{{caption}}'
+  expect:
+    any_of:
+    - resource_id: com.zhiliaoapp.musically:id/fzi
+    - resource_id: com.zhiliaoapp.musically:id/under_image_text_scroll_container
+    - resource_id: com.zhiliaoapp.musically:id/fz7
+    timeout: 10
+  optional: false
+  retries: 2
+- id: s10
+  intent: Tap Done to close the full-screen caption editor
+  action: tap
+  target:
+    resource_id: com.zhiliaoapp.musically:id/fzi
+    text: Done
+    content_desc: ''
+    class: android.widget.Button
+    path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[1]/FrameLayout[0]/FrameLayout[1]/RelativeLayout[0]/FrameLayout[3]/Button[1]
+    rel_pos:
+    - 0.9153
+    - 0.0544
+    context:
+      ancestor_text: ''
+      sibling_texts: []
+      parent_path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[1]/FrameLayout[0]/FrameLayout[1]/RelativeLayout[0]/FrameLayout[3]
+      orientation: portrait
+  value: null
+  expect:
+    any_of:
+    - resource_id: com.zhiliaoapp.musically:id/zbv
+    - resource_id: com.zhiliaoapp.musically:id/hij
+    - resource_id: com.zhiliaoapp.musically:id/svu
+    timeout: 10
+  optional: false
+  retries: 2
+- id: s11
+  intent: Save to Drafts (bottom left) — never tap Post; then confirm we're back on
+    the feed/profile
+  action: tap
+  target:
+    resource_id: com.zhiliaoapp.musically:id/ght
+    text: Drafts
+    content_desc: ''
+    class: android.widget.Button
+    path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[1]/FrameLayout[0]/FrameLayout[1]/RelativeLayout[0]/RelativeLayout[5]/LinearLayout[1]/Button[0]
+    rel_pos:
+    - 0.2597
+    - 0.9007
+    context:
+      ancestor_text: ''
+      sibling_texts: []
+      parent_path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[1]/FrameLayout[0]/FrameLayout[1]/RelativeLayout[0]/RelativeLayout[5]/LinearLayout[1]
+      orientation: portrait
+  value: null
+  expect:
+    any_of:
+    - resource_id: com.zhiliaoapp.musically:id/v4w
+    - resource_id: com.zhiliaoapp.musically:id/jja
+    - resource_id: com.zhiliaoapp.musically:id/viewpager
+    timeout: 20
+  optional: false
+  retries: 2
