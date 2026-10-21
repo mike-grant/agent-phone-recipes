@@ -4,12 +4,12 @@
     {
       "name": "tiktok/carousel-draft",
       "path": "recipes/tiktok/carousel-draft.yaml",
-      "version": 2,
+      "version": 3,
       "app": "com.zhiliaoapp.musically",
       "description": "Post a photo carousel from a folder of images to TikTok DRAFTS. Saves to Drafts only — never publishes.",
       "tested": {
-        "date": "2026-10-01",
-        "app_version": ""
+        "date": "2026-10-21",
+        "app_version": "47.1.4"
       },
       "min_engine": "0.3.0",
       "actions": [
@@ -25,7 +25,7 @@
         "caption": "text",
         "caption_file": "file"
       },
-      "sha256": "e73088c7d0419af581c07f0f5cc4ac6125494669caa15c2d0a1dbbc1768a1441"
+      "sha256": "2d87b23bc9ddf77a1062a6be0e584b11cadec255d4353b5a5860e71e247b5f8c"
     }
   ]
 }
