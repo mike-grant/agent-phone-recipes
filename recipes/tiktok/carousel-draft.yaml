@@ -2,13 +2,13 @@
 # Usage: agent-phone run tiktok/carousel-draft --param images=DIR --param caption_file=PATH
 #   or:  agent-phone tiktok-draft DIR [--caption TEXT | --caption-file PATH]
 name: tiktok/carousel-draft
-version: 2
+version: 3
 app: com.zhiliaoapp.musically
 description: Post a photo carousel from a folder of images to TikTok DRAFTS. Saves
   to Drafts only — never publishes.
 tested:
-  date: '2026-10-01'
-  app_version: ''
+  date: '2026-10-21'
+  app_version: 47.1.4
 min_engine: 0.3.0
 params:
   images:
@@ -25,6 +25,7 @@ params:
 forbid:
 - text: Post
 - resource_id_suffix: tiq
+- resource_id_suffix: tl8
 - text: Your Story
 - resource_id_suffix: tv_quick_publish
 popups:
@@ -51,6 +52,11 @@ steps:
   value: com.zhiliaoapp.musically
   expect:
     any_of:
+    - content_desc: Create
+    - content_desc: Home
+    - resource_id: com.zhiliaoapp.musically:id/a3l
+    - resource_id: com.zhiliaoapp.musically:id/v8a
+    - resource_id: com.zhiliaoapp.musically:id/v8d
     - resource_id: com.zhiliaoapp.musically:id/a3k
     - resource_id: com.zhiliaoapp.musically:id/v4t
     - resource_id: com.zhiliaoapp.musically:id/v4w
@@ -71,11 +77,11 @@ steps:
   intent: Tap the Create (+) button in the bottom navigation
   action: tap
   target:
-    resource_id: com.zhiliaoapp.musically:id/omm
+    resource_id: com.zhiliaoapp.musically:id/opd
     text: ''
     content_desc: Create
     class: android.widget.Button
-    path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/FrameLayout[0]/05nV[0]/TabHost[0]/FrameLayout[1]/LinearLayout[3]/Button[2]
+    path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/FrameLayout[0]/05rd[0]/TabHost[0]/FrameLayout[1]/LinearLayout[3]/Button[2]
     rel_pos:
     - 0.5
     - 0.9142
@@ -86,7 +92,7 @@ steps:
       - Shop
       - Inbox
       - Profile
-      parent_path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/FrameLayout[0]/05nV[0]/TabHost[0]/FrameLayout[1]/LinearLayout[3]
+      parent_path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/FrameLayout[0]/FrameLayout[0]/05rd[0]/TabHost[0]/FrameLayout[1]/LinearLayout[3]
       orientation: portrait
     bounds:
     - 576
@@ -99,8 +105,13 @@ steps:
   value: null
   expect:
     any_of:
-    - resource_id: com.zhiliaoapp.musically:id/puj
     - resource_id: com.zhiliaoapp.musically:id/video_record_new_scene_root
+    - resource_id: com.zhiliaoapp.musically:id/upload_hot_area
+    - content_desc: Flip
+    - text: Flip
+    - resource_id: com.zhiliaoapp.musically:id/pxa
+    - resource_id: com.zhiliaoapp.musically:id/n82
+    - resource_id: com.zhiliaoapp.musically:id/puj
     - resource_id: com.zhiliaoapp.musically:id/n5g
     timeout: 10
   optional: false
@@ -133,9 +144,15 @@ steps:
   value: null
   expect:
     any_of:
+    - text: Photos
+    - content_desc: Photos
+    - text: Videos
+    - resource_id: com.zhiliaoapp.musically:id/viewpager_choose_media
+    - resource_id: com.zhiliaoapp.musically:id/e0x
+    - resource_id: com.zhiliaoapp.musically:id/g3d
+    - resource_id: com.zhiliaoapp.musically:id/ayy
     - resource_id: com.zhiliaoapp.musically:id/e0b
     - resource_id: com.zhiliaoapp.musically:id/g1z
-    - resource_id: com.zhiliaoapp.musically:id/ayq
     timeout: 10
   optional: false
   retries: 2
@@ -144,7 +161,7 @@ steps:
     their selection circles
   action: select_grid
   target:
-    resource_id: com.zhiliaoapp.musically:id/l34
+    resource_id: com.zhiliaoapp.musically:id/l4o
     text: ''
     content_desc: ''
     class: android.widget.Button
@@ -176,7 +193,7 @@ steps:
   intent: Tap 'Next (N)' to continue with the selected photos
   action: tap
   target:
-    resource_id: com.zhiliaoapp.musically:id/xyk
+    resource_id: com.zhiliaoapp.musically:id/y4k
     text: Next ({{image_count}})
     content_desc: ''
     class: android.widget.Button
@@ -200,6 +217,13 @@ steps:
   value: null
   expect:
     any_of:
+    - text: Your Story
+    - content_desc: Templates
+    - text: Templates
+    - resource_id: com.zhiliaoapp.musically:id/tv_quick_publish
+    - resource_id: com.zhiliaoapp.musically:id/l2e
+    - resource_id: com.zhiliaoapp.musically:id/yuo
+    - resource_id: com.zhiliaoapp.musically:id/h58
     - resource_id: com.zhiliaoapp.musically:id/l0u
     - resource_id: com.zhiliaoapp.musically:id/h4g
     - resource_id: com.zhiliaoapp.musically:id/h3v
@@ -211,7 +235,7 @@ steps:
     immediately
   action: tap
   target:
-    resource_id: com.zhiliaoapp.musically:id/q05
+    resource_id: com.zhiliaoapp.musically:id/q2v
     text: Next
     content_desc: ''
     class: android.widget.TextView
@@ -227,8 +251,11 @@ steps:
   value: null
   expect:
     any_of:
+    - text: Drafts
+    - text: Add link
+    - resource_id: com.zhiliaoapp.musically:id/tla
+    - resource_id: com.zhiliaoapp.musically:id/va_
     - resource_id: com.zhiliaoapp.musically:id/tit
-    - resource_id: com.zhiliaoapp.musically:id/e0b
     - resource_id: com.zhiliaoapp.musically:id/v7s
     timeout: 10
   optional: false
@@ -238,7 +265,7 @@ steps:
     text)
   action: type
   target:
-    resource_id: com.zhiliaoapp.musically:id/h8e
+    resource_id: com.zhiliaoapp.musically:id/h9r
     text: ''
     content_desc: ''
     class: android.widget.EditText
@@ -262,8 +289,10 @@ steps:
   value: '{{caption}}'
   expect:
     any_of:
-    - resource_id: com.zhiliaoapp.musically:id/fzi
+    - text: Done
     - resource_id: com.zhiliaoapp.musically:id/under_image_text_scroll_container
+    - resource_id: com.zhiliaoapp.musically:id/g0x
+    - resource_id: com.zhiliaoapp.musically:id/fzi
     - resource_id: com.zhiliaoapp.musically:id/fz7
     timeout: 10
   optional: false
@@ -272,7 +301,7 @@ steps:
   intent: Tap Done to close the full-screen caption editor
   action: tap
   target:
-    resource_id: com.zhiliaoapp.musically:id/fzi
+    resource_id: com.zhiliaoapp.musically:id/g0x
     text: Done
     content_desc: ''
     class: android.widget.Button
@@ -288,6 +317,8 @@ steps:
   value: null
   expect:
     any_of:
+    - text: Drafts
+    - text: Add link
     - resource_id: com.zhiliaoapp.musically:id/zbv
     - resource_id: com.zhiliaoapp.musically:id/hij
     - resource_id: com.zhiliaoapp.musically:id/svu
@@ -299,7 +330,7 @@ steps:
     the feed/profile
   action: tap
   target:
-    resource_id: com.zhiliaoapp.musically:id/ght
+    resource_id: com.zhiliaoapp.musically:id/gj6
     text: Drafts
     content_desc: ''
     class: android.widget.Button
@@ -315,6 +346,9 @@ steps:
   value: null
   expect:
     any_of:
+    - content_desc: Create
+    - content_desc: Home
+    - resource_id: com.zhiliaoapp.musically:id/v8d
     - resource_id: com.zhiliaoapp.musically:id/v4w
     - resource_id: com.zhiliaoapp.musically:id/jja
     - resource_id: com.zhiliaoapp.musically:id/viewpager
