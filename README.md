@@ -9,7 +9,7 @@ of steps (tap this element, type into that field, expect this screen) that
 ```bash
 agent-phone recipe search tiktok
 agent-phone recipe install tiktok/carousel-draft
-agent-phone run tiktok/carousel-draft --param images=~/slides --param caption="hello"
+agent-phone run tiktok/carousel-draft --param images=~/slides --param caption="hello" --param account=myhandle
 ```
 
 This repo is the default recipe source, so it needs no configuration.
@@ -18,7 +18,7 @@ This repo is the default recipe source, so it needs no configuration.
 
 | Name | App | What it does |
 |---|---|---|
-| `tiktok/carousel-draft` | TikTok (`com.zhiliaoapp.musically`) | Builds a photo carousel from a folder of images plus a caption and **saves it to Drafts**. It never publishes: its `forbid` list blocks Post / Your Story. |
+| `tiktok/carousel-draft` | TikTok (`com.zhiliaoapp.musically`) | Switches to the `account` handle (and checks the profile shows it), then builds a photo carousel from a folder of images plus a caption and **saves it to Drafts**. It never publishes: its `forbid` list blocks Post / Your Story. |
 
 ## Contributing a recipe
 
