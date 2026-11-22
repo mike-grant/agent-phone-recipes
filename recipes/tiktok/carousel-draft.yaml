@@ -1,8 +1,9 @@
 # SAVES TO DRAFTS ONLY — NEVER PUBLISHES. `forbid` refuses taps on Post / Your Story.
-# Usage: agent-phone run tiktok/carousel-draft --param images=DIR --param caption_file=PATH
-#   or:  agent-phone tiktok-draft DIR [--caption TEXT | --caption-file PATH]
+# Usage: agent-phone run tiktok/carousel-draft --param images=DIR --param caption_file=PATH --param account=HANDLE
+# Switches TikTok to `account` (handle, no @) first and checks the profile shows
+# @account before creating anything, so a draft can't land on another account.
 name: tiktok/carousel-draft
-version: 3
+version: 4
 app: com.zhiliaoapp.musically
 description: Post a photo carousel from a folder of images to TikTok DRAFTS. Saves
   to Drafts only — never publishes.
@@ -22,12 +23,20 @@ params:
     type: file
     default: ''
     description: 'Alternative to caption: path of a text file'
+  account:
+    required: true
+    description: TikTok handle to save the draft on, without the @ (must be signed in on the phone)
 forbid:
 - text: Post
 - resource_id_suffix: tiq
 - resource_id_suffix: tl8
 - text: Your Story
 - resource_id_suffix: tv_quick_publish
+# TikTok's ad-plan choice (paid Ad-Free vs Standard) is the account owner's to
+# make; stop rather than pick for them.
+abort_if:
+- text: Pick your plan
+- text: Choose your ad experience
 popups:
 - text: Don’t allow
 - text: Don't allow
@@ -73,6 +82,80 @@ steps:
   timeout: 2
   optional: true
   retries: 0
+- id: a1
+  intent: Open our own profile from the bottom navigation
+  action: tap
+  target:
+    resource_id: com.zhiliaoapp.musically:id/oph
+    content_desc: Profile
+    class: android.widget.FrameLayout
+  value: null
+  expect:
+    any_of:
+    - text_regex: '^@[A-Za-z0-9_.]+$'
+    timeout: 10
+  optional: false
+  retries: 2
+- id: a2
+  intent: Tap the display name at the top of the profile to open the Switch account sheet
+  action: tap
+  target:
+    resource_id: com.zhiliaoapp.musically:id/tbv
+    class: android.widget.Button
+    path: hierarchy/FrameLayout[0]/LinearLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[0]/FrameLayout[1]/06v5[0]/TabHost[0]/FrameLayout[1]/FrameLayout[0]/RelativeLayout[0]/LinearLayout[0]/LinearLayout[2]/FrameLayout[0]/LinearLayout[0]/LinearLayout[0]/LinearLayout[0]/LinearLayout[0]/LinearLayout[0]/FrameLayout[0]/Button[0]
+    rel_pos:
+    - 0.2938
+    - 0.1347
+  value: null
+  expect:
+    any_of:
+    - text: Switch account
+    timeout: 10
+  optional: false
+  retries: 2
+- id: a3
+  intent: Tap the {{account}} row in the Switch account sheet. Another account reloads
+    TikTok onto the For You feed; the account already in use leaves the sheet open
+    (a4 closes it). Optional so that case carries on; a5 is what proves the account
+  action: tap
+  target:
+    resource_id: com.zhiliaoapp.musically:id/ltq
+    text: '{{account}}'
+    class: android.widget.Button
+  value: null
+  locate_timeout: 5
+  expect:
+    any_of:
+    - content_desc: Profile
+    timeout: 25
+  optional: true
+  retries: 0
+- id: a4
+  intent: Close the Switch account sheet if it is still open (the account was already
+    active)
+  action: back_until
+  max: 2
+  expect:
+    any_of:
+    - content_desc: Profile
+    timeout: 5
+  optional: false
+  retries: 0
+- id: a5
+  intent: Open the profile again and confirm it is @{{account}}; stop here if not, so
+    the draft can only land on that account
+  action: tap
+  target:
+    resource_id: com.zhiliaoapp.musically:id/oph
+    content_desc: Profile
+    class: android.widget.FrameLayout
+  value: null
+  expect:
+    any_of:
+    - text: '@{{account}}'
+    timeout: 20
+  optional: false
+  retries: 2
 - id: s4
   intent: Tap the Create (+) button in the bottom navigation
   action: tap
