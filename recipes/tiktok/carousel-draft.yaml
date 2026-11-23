@@ -117,7 +117,7 @@ steps:
 - id: a3
   intent: Tap the {{account}} row in the Switch account sheet. Another account reloads
     TikTok onto the For You feed; the account already in use leaves the sheet open
-    (a4 closes it). Optional so that case carries on; a5 is what proves the account
+    (a4's relaunch closes it). Optional so that case carries on; a5 is what proves the account
   action: tap
   target:
     resource_id: com.zhiliaoapp.musically:id/ltq
@@ -132,14 +132,20 @@ steps:
   optional: true
   retries: 0
 - id: a4
-  intent: Close the Switch account sheet if it is still open (the account was already
-    active); nothing to do after a switch
-  action: dismiss_if_present
-  targets:
-  - content_desc: Close
-  timeout: 3
-  optional: true
-  retries: 0
+  intent: Relaunch TikTok on the account now in use. After a switch TikTok sometimes
+    opens one of that account's videos full screen (no bottom bar); a cold start
+    always lands on the home feed, and also closes the sheet if the account was
+    already active
+  action: app
+  restart: true
+  target: null
+  value: com.zhiliaoapp.musically
+  expect:
+    any_of:
+    - content_desc: Profile
+    timeout: 20
+  optional: false
+  retries: 2
 - id: a5
   intent: Open the profile again and confirm it is @{{account}}; stop here if not, so
     the draft can only land on that account
