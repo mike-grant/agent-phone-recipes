@@ -14,7 +14,6 @@
       "min_engine": "0.3.0",
       "actions": [
         "app",
-        "back_until",
         "dismiss_if_present",
         "push_images",
         "select_grid",
@@ -27,7 +26,7 @@
         "caption_file": "file",
         "account": "text"
       },
-      "sha256": "a761259ef4516f2ab7ee04a34ca46ed8c0b9eb6c89c8528da8151ce3b71a4895"
+      "sha256": "7667cf970553c53797a8c762b131a83dbbbacf5950155fa4961464b0d50640d2"
     }
   ]
 }
