@@ -92,7 +92,8 @@ steps:
   value: null
   expect:
     any_of:
-    - text_regex: '^@[A-Za-z0-9_.]+$'
+    - text: Followers
+    - text: Following
     timeout: 10
   optional: false
   retries: 2
@@ -132,14 +133,12 @@ steps:
   retries: 0
 - id: a4
   intent: Close the Switch account sheet if it is still open (the account was already
-    active)
-  action: back_until
-  max: 2
-  expect:
-    any_of:
-    - content_desc: Profile
-    timeout: 5
-  optional: false
+    active); nothing to do after a switch
+  action: dismiss_if_present
+  targets:
+  - content_desc: Close
+  timeout: 3
+  optional: true
   retries: 0
 - id: a5
   intent: Open the profile again and confirm it is @{{account}}; stop here if not, so
